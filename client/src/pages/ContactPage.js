@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import ContactForm from '../components/ContactForm';
 import { Connect, mutation } from 'urql';
 import { HOME } from '../utils/constants';
+import { navigate } from '@reach/router';
 
 class ContactPage extends Component {
   submitContactInfo = async ({ name, message }) => {
     if (name && message) {
-      const { submitContactInfo, updateRoute } = this.props;
+      const { submitContactInfo } = this.props;
       await submitContactInfo({ name, message });
-      updateRoute({ route: HOME });
+      navigate(`${HOME}`);
     }
   };
 
@@ -34,16 +35,11 @@ mutation($name: String!, $message: String!) {
 }
 `;
 
-const ConnectedContactPage = ({ updateRoute }) => {
+const ConnectedContactPage = ({}) => {
   return (
     <Connect mutation={{ submitContactInfo: mutation(SubmitContactInfo) }}>
       {({ submitContactInfo }) => {
-        return (
-          <ContactPage
-            submitContactInfo={submitContactInfo}
-            updateRoute={updateRoute}
-          />
-        );
+        return <ContactPage submitContactInfo={submitContactInfo} />;
       }}
     </Connect>
   );

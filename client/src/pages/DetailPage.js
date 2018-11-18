@@ -3,6 +3,7 @@ import { Connect, query } from 'urql';
 import { priceInDollars } from '../utils';
 import Loading from '../components/Loading';
 import Counter from '../components/Counter';
+import { CartConsumer } from '../components/Cart';
 
 class DetailPage extends Component {
   state = {
@@ -12,8 +13,8 @@ class DetailPage extends Component {
   addToCart = () => {
     const { quantity } = this.state;
     if (quantity > 0) {
-      const { id: productId, updateQuantity } = this.props;
-      updateQuantity({ productId, quantity });
+      const { id: productId } = this.props;
+      this.updateQuantity({ productId, quantity });
     }
   };
 
@@ -60,7 +61,7 @@ query($productId: ID!) {
 }
 `;
 
-const ConnectedDetailPage = ({ productId, updateQuantity }) => {
+const ConnectedDetailPage = ({ productId }) => {
   return (
     <Connect query={query(GetProduct, { productId })}>
       {({ loaded, data }) => {
@@ -69,7 +70,14 @@ const ConnectedDetailPage = ({ productId, updateQuantity }) => {
         }
 
         return (
-          <DetailPage {...data.getProduct} updateQuantity={updateQuantity} />
+          <CartConsumer>
+            {updateQuantity => (
+              <DetailPage
+                {...data.getProduct}
+                updateQuantity={updateQuantity}
+              />
+            )}
+          </CartConsumer>
         );
       }}
     </Connect>

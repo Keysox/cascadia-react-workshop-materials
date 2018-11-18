@@ -3,7 +3,7 @@ import { Connect, query } from 'urql';
 import Product from './Product';
 import Loading from '../components/Loading';
 
-const Products = ({ products, updateRoute, updateQuantity }) => {
+const Products = ({ products }) => {
   if (!products) return null;
   const productList = products.slice();
   const rows = [];
@@ -15,11 +15,7 @@ const Products = ({ products, updateRoute, updateQuantity }) => {
     <div className="columns" key={index}>
       {products.map((product, index) => (
         <div className="column" key={index}>
-          <Product
-            product={products[index]}
-            updateRoute={updateRoute}
-            updateQuantity={updateQuantity}
-          />
+          <Product product={products[index]} />
         </div>
       ))}
     </div>
@@ -37,18 +33,14 @@ query {
 }
 `;
 
-const ConnectedProducts = ({ updateQuantity, updateRoute }) => (
+const ConnectedProducts = ({ updateQuantity }) => (
   <Connect query={query(GetProducts)}>
     {({ loaded, data }) => {
       if (!loaded) {
         return <Loading />;
       }
       return (
-        <Products
-          products={data.getProducts}
-          updateQuantity={updateQuantity}
-          updateRoute={updateRoute}
-        />
+        <Products products={data.getProducts} updateQuantity={updateQuantity} />
       );
     }}
   </Connect>

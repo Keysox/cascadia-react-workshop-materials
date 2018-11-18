@@ -1,10 +1,10 @@
 import React from 'react';
 import Products from '../components/Products';
 
-const HomePage = ({ updateQuantity, updateRoute }) => {
+const HomePage = () => {
   return (
     <div className="container">
-      <Products updateRoute={updateRoute} updateQuantity={updateQuantity} />
+      <Products />
     </div>
   );
 };
